@@ -374,74 +374,6 @@ class IvnM:
             result.append(sumj)
         return result
 
-    def AHPgetmatrixDivSum(self, matrix,colSum):
-
-        result= copy.deepcopy(matrix)
-
-        for i in range(len(matrix)):
-
-            for j in range(len(matrix[0])):
-                colSum[j].tl= colSum[j].tu
-                colSum[j].il = colSum[j].iu
-                colSum[j].fl = colSum[j].fu
-
-                result[i][j]= self.getDivDirect(matrix[i][j],colSum[j])
-
-
-
-        return result
-
-    def AHPgetCriteriaWeight(self, matrix):
-
-        result= copy.deepcopy(matrix)
-
-        for i in range(len(matrix)):
-
-            for j in range(len(matrix[0])):
-                result[i][j]= self.getDivDirect( matrix[i][j],0)
-
-
-
-        return result
-
-    def AHPproductWeight(self, matrix, cweight):
-        result=copy.deepcopy(matrix)
-        for i in range(len(matrix)):
-
-            for j in range(len(matrix[0])):
-                     result[i][j].tl = round(float(matrix[i][j].tl) * float(cweight[j].tl),3)
-                     result[i][j].tu = round(float(matrix[i][j].tu) * float(cweight[j].tu),3)
-                     result[i][j].il = round(float(matrix[i][j].il) * float(cweight[j].il),3)
-                     result[i][j].iu = round(float(matrix[i][j].iu) * float(cweight[j].iu),3)
-                     result[i][j].fl = round(float(matrix[i][j].fl) * float(cweight[j].fl),3)
-                     result[i][j].fu = round(float(matrix[i][j].fu) * float(cweight[j].fu),3)
-
-
-        return result
-
-    def AHPCrSumWeight(self,matrix):
-        listj = IvnM('')
-        result = []
-        sumj = None
-        NumOfCriteria = len(matrix)
-
-        for i in range(NumOfCriteria):
-            sumj = listj.getSumDirectForRow(matrix, i)
-
-            result.append(sumj)
-        return result
-
-    def AHP_CSWdivW(self,CSW,W):
-        result=copy.deepcopy(W)
-
-        for i in range(len(W)) :
-            result[i].tl = float(CSW[i].tl) / float(W[i].tl)
-            result[i].tu = float(CSW[i].tu) / float(W[i].tu)
-            result[i].il = float(CSW[i].il) / float(W[i].il)
-            result[i].iu = float(CSW[i].iu) / float(W[i].iu)
-            result[i].fl = float(CSW[i].fl) / float(W[i].fl)
-            result[i].fu = float(CSW[i].fu) / float(W[i].fu)
-        return result
 
     def printFloatMatrix(self,matrix):
         result=''
@@ -472,61 +404,6 @@ class IvnM:
 
         return rowSum
 
-    def lambdamax(self,arr,w):
-
-        Rindex=[0,0,0,0.58,0.9,1.12,1.24,1.32,1.41,1.45,1.49]
-
-        sum=0
-        x = Ivns(0, 0, 0, 0, 0, 0)
-        for i in range(len(arr)):
-            sum = sum + float(arr[i]) / x.deNeutrosophic(w[i])
-
-        result = sum / len(arr)
-        result =result - len(arr)
-        result= result / (len(arr) - 1)
-
-        result=result/Rindex[len(arr)]
-        result=round(result,4)
-        return result
 
 
-
-    def AHP(self, matrix):
-        sumCols=  self.matrixGetColSum(matrix)
-        updatedMatrix= self.AHPgetmatrixDivSum(matrix,sumCols)
-        CriteriaWeight= self.matrixGetCriteriaWeight(updatedMatrix)
-        matrixTimesWeight= self.AHPproductWeight(matrix,CriteriaWeight)
-        CrSumWeight=self.AHPCrSumWeight(matrixTimesWeight)
-        CSWdivW= self.AHP_CSWdivW(CrSumWeight,matrixTimesWeight)
-        lambdaMax =self.DivScalar(CSWdivW,len(CSWdivW))
-
-        listj= IvnM('')
-        result= []
-        sumj= None
-
-        for i in range(1):
-
-            for j in range(len(matrix[0])):
-                sumj = listj.getSumDirect(matrix,j)
-
-                result.append(sumj)
-        return result
-
-    def EuclidianDistance(self, n1, n2):
-        result=0
-        for i in range(len(n1)):
-            result = result + (float(n1[i][0].tl) - float(n2[i][0].tl))**2 + (float(n1[i][0].tu) - float(n2[i][0].tu))**2 + (float(n1[i][0].il) - float(n2[i][0].il))**2 + (float(n1[i][0].iu) - float(n2[i][0].iu))**2 + (float(n1[i][0].fl) - float(n2[i][0].fl))**2 +  (float(n1[i][0].fu) - float(n2[i][0].fu))**2
-
-        result = sqrt(result/(6 * len(n1)))
-        return result
-
-    def similarity(self, n1, n2):
-        result1=0
-        result2 = 0
-
-        for i in range(len(n1)):
-            result1 = result1 + min(float(n1[i][0].tl) , float(n2[i][0].tl)) + min(float(n1[i][0].tu) , float(n2[i][0].tu)) + min(float(n1[i][0].il) , float(n2[i][0].il)) + min(float(n1[i][0].iu) , float(n2[i][0].iu)) + min(float(n1[i][0].fl) , float(n2[i][0].fl)) +  min(float(n1[i][0].fu) , float(n2[i][0].fu))
-            result2 = result2 + max(float(n1[i][0].tl) , float(n2[i][0].tl)) + max(float(n1[i][0].tu) , float(n2[i][0].tu)) + max(float(n1[i][0].il) , float(n2[i][0].il)) + max(float(n1[i][0].iu) , float(n2[i][0].iu)) + max(float(n1[i][0].fl) , float(n2[i][0].fl)) +  max(float(n1[i][0].fu) , float(n2[i][0].fu))
-
-        result = result1/result2
-        return result
+   
