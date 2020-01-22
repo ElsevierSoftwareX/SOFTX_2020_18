@@ -8,124 +8,14 @@ from django.template import RequestContext
 from django.http import HttpResponse
 from ivns.models import InputForm
 from ivns.models import InputNormForm
-from ivns.models import InputAHPForm
-from ivns.models import InputSimiForm
 
 
-from ivns.compute import compute
+
+
 from ivns.IvnM import IvnM
 
 from ivns.ivns import Ivns
 from ivns.normal import norm
-
-def similarity(request):
-    form = InputSimiForm(request.POST or None)
-    context = {'form': form, }
-
-    if request.method == 'POST':
-        if 'Euclidian' in request.POST:
-            form = InputSimiForm(request.POST)
-            if form.is_valid():
-                form = form.save(commit=False)
-                textA = form.num1
-                textB = form.num2
-                matrixA = IvnM(textA)
-                matrixB = IvnM(textB)
-                matrix = IvnM(textA)
-                listA = matrixA.Create()
-                listB = matrixB.Create()
-                result = matrixA.EuclidianDistance(listA,listB)
-                resultlabel='Euclidian Distance'
-                form = InputSimiForm()
-                context = {'form': form,
-                           'result': result,
-                           'resultlabel': resultlabel,
-                           }
-        elif 'simi' in request.POST:
-                    form = InputSimiForm(request.POST)
-                    if form.is_valid():
-                        form = form.save(commit=False)
-                        textA = form.num1
-                        textB = form.num2
-                        matrixA = IvnM(textA)
-                        matrixB = IvnM(textB)
-                        matrix = IvnM(textA)
-                        listA = matrixA.Create()
-                        listB = matrixB.Create()
-                        result = matrixA.similarity(listA, listB)
-                        resultlabel = 'Similarity Measure'
-                        form = InputSimiForm()
-                        context = {'form': form,
-                                   'result': result,
-                                   'resultlabel': resultlabel,
-                                   }
-    else:
-        form = InputSimiForm(request.POST or None)
-
-
-
-    return render(request, 'similarty.html', context)
-
-def ahp(request):
-
-    form = InputAHPForm(request.POST or None)
-    context = {'form': form, }
-    if request.method == 'POST':
-        if 'AHP' in request.POST:
-            form = InputAHPForm(request.POST)
-            if form.is_valid():
-                form = form.save(commit=False)
-                text=form.matrix
-                matrixA = IvnM(text)
-                listA = matrixA.Create()
-                #aaa= Ivns(.1,.5,.3,.4,.2,.5)
-                #bbb= Ivns(.4,.5,.2,.3,.1,.3)
-                sumCols = matrixA.matrixGetColSum(listA)
-                updatedMatrix = matrixA.AHPgetmatrixDivSum(listA, sumCols)
-                CriteriaWeight = matrixA.matrixGetCriteriaWeight(updatedMatrix)
-                matrixTimesWeight = matrixA.AHPproductWeight(listA, CriteriaWeight)
-                CrSumWeight = matrixA.AHPCrSumWeight(matrixTimesWeight)
-                CSWdivW = matrixA.AHP_CSWdivW(CrSumWeight, CriteriaWeight)
-                #lambdaMax = matrixA.DivScalar(CSWdivW, len(CSWdivW))
-                deNutrosophicValue = matrixA.deNuutrosophicMatrix(matrixTimesWeight)
-                deNutrosophicSum = matrixA.deNuutrosophicSum(deNutrosophicValue)
-                lambdaMax = matrixA.lambdamax(deNutrosophicSum,CriteriaWeight)
-                result =  matrixA.ArrayToText(matrixA.matrixGetColSum(listA))
-                result2 = matrixA.ToText(updatedMatrix)
-                result3 = matrixA.ArrayToText(CriteriaWeight)
-                result4 = matrixA.ToText(matrixTimesWeight)
-                result5 = matrixA.printFloatMatrix(deNutrosophicValue)
-
-                #result5 = deNutrosophicValue
-                result6= matrixA.ToText(listA)
-                #result5 = matrixA.ArrayToText(CrSumWeight)
-                result6 = deNutrosophicSum
-                result7 = lambdaMax
-
-                #result= matrixA.ToText(matrixA.getMatrixScore(listA))
-                #result = (matrixA.getmax(listA,1)).IvnsText()
-                #aaa=       ( aaa.Division(aaa,bbb))
-                #result= aaa.IvnsText()
-                resultlabel='AHP '
-
-                form = InputAHPForm()
-                context = {'form': form,
-                           'result': result,
-                           'result2': result2,
-                           'result3': result3,
-                           'result4': result4,
-                           'result5': result5,
-                           'result6': result6,
-                           'result7': result7,
-                           'resultlabel': resultlabel,
-                           }
-    else:
-        form = InputAHPForm(request.POST or None)
-
-
-
-    return render(request, 'ahp.html', context)
-
 
 def norm(request):
 
