@@ -6,10 +6,7 @@ There are two main functions illustrated in the top menu of the software.
 2.	Neutrosophic matrix normalization   
 
 # Ivns operations :
-contain the following functions.
-•	Calculate complement , product scalar , power scalar of ivns matrix.
-•	Calculate Karasan score , Ridvan score ,and Nancy score for ivns matrix.
-•	Calculate the intersection, union , addition, difference ,multiplication  of two ivns matrices.
+contain the following functions.  •	Calculate complement , product scalar , power scalar of ivns matrix.  •	Calculate Karasan score , Ridvan score ,and Nancy score for ivns matrix.  •	Calculate the intersection, union , addition, difference ,multiplication  of two ivns matrices.
  
  # Neutrosophic matrix normalization : 
  performs following functions for beneficial and non-beneficial matrix.
